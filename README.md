@@ -55,18 +55,18 @@ A professional, institutional-grade self-assessment dashboard designed for **NBA
    ```
 
 ## 📐 Criteria Structure
+...
+Governance, Institutional Support and Financial Resources (145)
 
-The marks distribution follows the standard NBA Tier-I manual:
-- **C1**: Vision, Mission and PEOs (50)
-- **C2**: Program Curriculum & Teaching-Learning Processes (100)
-- **C3**: Course Outcomes and Program Outcomes (175)
-- **C4**: Students' Performance (100)
-- **C5**: Faculty Information and Contributions (200)
-- **C6**: Facilities and Technical Support (80)
-- **C7**: Continuous Improvement (50)
-- **C8**: First Year Academics (50)
-- **C9**: Student Support Systems (50)
-- **C10**: Governance, Institutional Support and Financial Resources (145)
+## 🚢 Deployment to GitHub Pages
+
+I have pre-configured this project for a smooth GitHub Pages deployment:
+1. **Relative Paths**: `vite.config.ts` is set to `base: './'`, so your assets will load correctly even in subfolders.
+2. **Automatic Build**: A GitHub Action (`.github/workflows/deploy.yml`) is included. 
+   - Simply push to the `main` branch.
+   - Go to your GitHub Repository **Settings > Pages**.
+   - Under **Build and deployment > Source**, select **"GitHub Actions"**.
+   - Your site will deploy automatically!
 
 ## ⚖️ License
 
