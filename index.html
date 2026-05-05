@@ -5,27 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NBA Coordinator - Self Assessment</title>
     <script>
-      // Force fetch to be writable: some environments (like AI Studio) protect it,
-      // but some third-party libraries (or dev tools) try to wrap it and crash.
       (function() {
-        var _fetch = window.fetch;
         try {
-          Object.defineProperty(window, 'fetch', {
-            get: function() { return _fetch; },
-            set: function(v) { _fetch = v; },
-            configurable: true,
-            enumerable: true
-          });
-        } catch (e) {
-          // If redefine fails, we are likely in a strictly protected environment.
-          // We don't log anything to avoid confusing the user.
-        }
+          var _f = window.fetch;
+          var desc = Object.getOwnPropertyDescriptor(window, 'fetch') || 
+                     Object.getOwnPropertyDescriptor(Object.getPrototypeOf(window), 'fetch');
+          if (desc && !desc.set && desc.configurable) {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return _f; },
+              set: function(v) { _f = v; },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (e) {}
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
 
