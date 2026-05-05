@@ -5,29 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NBA Coordinator - Self Assessment</title>
     <script>
-      // Ultimate safety shim for window.fetch
+      // Force fetch to be writable: some environments (like AI Studio) protect it,
+      // but some third-party libraries (or dev tools) try to wrap it and crash.
       (function() {
-        var originalFetch = window.fetch;
+        var _fetch = window.fetch;
         try {
-          // Attempt to redefine if possible, or provide a silent setter
-          var descriptor = Object.getOwnPropertyDescriptor(window, 'fetch');
-          if (descriptor && !descriptor.set && descriptor.configurable) {
-            Object.defineProperty(window, 'fetch', {
-              get: function() { return originalFetch; },
-              set: function() { /* Silently ignore - fixes read-only error */ },
-              configurable: true,
-              enumerable: true
-            });
-          }
+          Object.defineProperty(window, 'fetch', {
+            get: function() { return _fetch; },
+            set: function(v) { _fetch = v; },
+            configurable: true,
+            enumerable: true
+          });
         } catch (e) {
-          console.warn('NBA: Safe environment check');
+          // If redefine fails, we are likely in a strictly protected environment.
+          // We don't log anything to avoid confusing the user.
         }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 
