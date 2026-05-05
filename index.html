@@ -5,25 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NBA Coordinator - Self Assessment</title>
     <script>
-      // Safe fetch shim to prevent "has only a getter" errors from third-party scripts
+      // Ultimate safety shim for window.fetch
       (function() {
         var originalFetch = window.fetch;
         try {
-          Object.defineProperty(window, 'fetch', {
-            get: function() { return originalFetch; },
-            set: function() { /* ignore silent */ },
-            configurable: true,
-            enumerable: true
-          });
+          // Attempt to redefine if possible, or provide a silent setter
+          var descriptor = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (descriptor && !descriptor.set && descriptor.configurable) {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return originalFetch; },
+              set: function() { /* Silently ignore - fixes read-only error */ },
+              configurable: true,
+              enumerable: true
+            });
+          }
         } catch (e) {
-          console.warn('NBA: Fetch compatibility layer active');
+          console.warn('NBA: Safe environment check');
         }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="src/main.tsx"></script>
   </body>
 </html>
 
