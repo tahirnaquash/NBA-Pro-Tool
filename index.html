@@ -5,25 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NBA Coordinator - Self Assessment</title>
     <script>
-      // Force compatibility for environments where window.fetch has only a getter
       (function() {
         try {
-          const original = window.fetch;
-          if (original && !Object.getOwnPropertyDescriptor(window, 'fetch')?.set) {
-            Object.defineProperty(window, 'fetch', {
-              get: function() { return original; },
-              set: function(v) { console.warn('Blocked attempt to overwrite read-only fetch'); },
-              configurable: true,
-              enumerable: true
-            });
+          const originalFetch = window.fetch;
+          // Attempt to redefine fetch as a simple writable property
+          Object.defineProperty(window, 'fetch', {
+            value: originalFetch,
+            writable: true,
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          try {
+            // Fallback: Add a silent setter to the existing descriptor
+            const proto = Object.getPrototypeOf(window);
+            const descriptor = Object.getOwnPropertyDescriptor(window, 'fetch') || 
+                              Object.getOwnPropertyDescriptor(proto, 'fetch');
+            
+            if (descriptor && !descriptor.set) {
+              Object.defineProperty(window, 'fetch', {
+                get: function() { return descriptor.get ? descriptor.get.call(window) : window.fetch; },
+                set: function() { /* Silently ignore - prevents "has only a getter" error */ },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (innerE) {
+            console.warn('Fetch shim fallback applied');
           }
-        } catch (e) {}
+        }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="src/main.tsx"></script>
   </body>
 </html>
 
