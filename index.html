@@ -5,41 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NBA Coordinator - Self Assessment</title>
     <script>
+      // Safe fetch shim to prevent "has only a getter" errors from third-party scripts
       (function() {
+        var originalFetch = window.fetch;
         try {
-          const originalFetch = window.fetch;
-          // Attempt to redefine fetch as a simple writable property
           Object.defineProperty(window, 'fetch', {
-            value: originalFetch,
-            writable: true,
+            get: function() { return originalFetch; },
+            set: function() { /* ignore silent */ },
             configurable: true,
             enumerable: true
           });
         } catch (e) {
-          try {
-            // Fallback: Add a silent setter to the existing descriptor
-            const proto = Object.getPrototypeOf(window);
-            const descriptor = Object.getOwnPropertyDescriptor(window, 'fetch') || 
-                              Object.getOwnPropertyDescriptor(proto, 'fetch');
-            
-            if (descriptor && !descriptor.set) {
-              Object.defineProperty(window, 'fetch', {
-                get: function() { return descriptor.get ? descriptor.get.call(window) : window.fetch; },
-                set: function() { /* Silently ignore - prevents "has only a getter" error */ },
-                configurable: true,
-                enumerable: true
-              });
-            }
-          } catch (innerE) {
-            console.warn('Fetch shim fallback applied');
-          }
+          console.warn('NBA: Fetch compatibility layer active');
         }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 
