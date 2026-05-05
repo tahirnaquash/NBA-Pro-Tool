@@ -7,24 +7,34 @@
     <script>
       (function() {
         try {
-          var _f = window.fetch;
-          var desc = Object.getOwnPropertyDescriptor(window, 'fetch') || 
-                     Object.getOwnPropertyDescriptor(Object.getPrototypeOf(window), 'fetch');
-          if (desc && !desc.set && desc.configurable) {
-            Object.defineProperty(window, 'fetch', {
-              get: function() { return _f; },
-              set: function(v) { _f = v; },
-              configurable: true,
-              enumerable: true
-            });
-          }
-        } catch (e) {}
+          var f = window.fetch;
+          Object.defineProperty(window, 'fetch', {
+            get: function() { return f; },
+            set: function(v) { f = v; },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          // If we can't redefine fetch on window, try the prototype
+          try {
+            var proto = Object.getPrototypeOf(window);
+            var desc = Object.getOwnPropertyDescriptor(proto, 'fetch');
+            if (desc && desc.configurable) {
+              Object.defineProperty(proto, 'fetch', {
+                get: function() { return f; },
+                set: function(v) { f = v; },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (e2) {}
+        }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 
